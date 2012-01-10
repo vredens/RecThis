@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/EerieSoft-LogThis.t
+lib/EerieSoft/LogThis.pm

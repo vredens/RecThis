@@ -1,0 +1,6 @@
+Revision history for Perl extension EerieSoft::LogThis.
+
+0.01  Tue Jan 10 20:42:03 2012
+	- original version; created by h2xs 1.23 with options
+		-XAn EerieSoft::LogThis
+
