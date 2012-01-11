@@ -40,39 +40,50 @@ our @EXPORT = qw(
 
 our $VERSION = '1.00';
 
-our $fh;
-our $log_level = ERROR;
+our $default_fh;
+our $default_ll = ERROR;
 
-sub init($$) {
+sub set_defaults($$) {
 	my $_f = shift;
 	my $_ll = shift;
 	
 	if (defined fileno($_f)) {
-		$fh = $_f;
+		$default_fh = $_f;
 	} elsif(-w $_f) {
-		open($fh, '>>', $_f) or croak('Could not open file ' . $_f);
+		open($default_fh, '>>', $_f) or croak('Could not open file ' . $_f);
 	} else {
 		croak 'You did not provide a writable file or filehandle';
 	}
 	croak 'Invalid minimum log level ' . $_ll unless ($_ll >= 0 and $_ll <= 100);
+	$default_ll = $_ll;
 }
 
-sub RecThis($$) {
+
+sub new($$) {
+	my $class = shift;
+	my $_ll = shift;
+
+	$default_fh = (*STDERR) unless (defined $default_fh);
+	
+	my $self = $_ll;
+	
+	bless($self, $class);
+}
+
+sub RecThis($$$) {
+	my $self = shift;
 	my $_l = shift;
 	my $_m = shift;
-	
-	$fh = (*STDERR) unless (defined $fh);
-	
-	print $fh, '[' . `date %Y-%m-%d %H:%M:%i` . '][' . $_l . ']' . '-' x $_l . ' ' . $_m . "\n" if ($_l >= 0 and $_l <= $log_level);
+
+	print $default_fh, '[' . `date %Y-%m-%d %H:%M:%i` . '][' . $_l . ']' . '-' x $_l . ' ' . $_m . "\n" if ($_l >= 0 and $_l <= $$self);
 }
 
-sub RecThisDump($$) {
+sub RecThisDump($$$) {
+	my $self = shift;
 	my $_l = shift;
 	my $_o = shift;
 	
-	$fh = (*STDERR) unless (defined $fh);
-	
-	print $fh, '[' . `date %Y-%m-%d %H:%M:%i` . '][' . $_l . ']' . '-' x $_l . ' ' . Dumper($_o) . "\n" if ($_l >= 0 and $_l <= $log_level);
+	print $default_fh, '[' . `date %Y-%m-%d %H:%M:%i` . '][' . $_l . ']' . '-' x $_l . ' ' . Dumper($_o) . "\n" if ($_l >= 0 and $_l <= $$self);
 }
 
 # Preloaded methods go here.

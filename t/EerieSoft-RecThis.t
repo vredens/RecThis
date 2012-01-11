@@ -11,7 +11,8 @@ use warnings;
 use Test::More tests => 1;
 BEGIN { use_ok('EerieSoft::RecThis') };
 
-can_ok('EerieSoft::RecThis', qw/RecThis RecThidDump/);
+my $o = new EerieSoft::RecThis(3);
+can_ok($o, qw/RecThis RecThidDump/);
 
 #########################
 
