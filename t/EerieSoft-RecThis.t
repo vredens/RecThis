@@ -9,7 +9,9 @@ use strict;
 use warnings;
 
 use Test::More tests => 1;
-BEGIN { use_ok('EerieSoft::LogThis') };
+BEGIN { use_ok('EerieSoft::RecThis') };
+
+can_ok('EerieSoft::RecThis', qw/RecThis RecThidDump/);
 
 #########################
 
