@@ -8,11 +8,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 3;
+
 BEGIN { use_ok('EerieSoft::RecThis') };
 
+
 my $o = new EerieSoft::RecThis(3);
-can_ok($o, qw/RecThis RecThidDump/);
+
+isa_ok($o, 'EerieSoft::RecThis');
+can_ok($o, qw/RecThis RecThisDump/);
 
 #########################
 

@@ -1,4 +1,4 @@
-package EerieSoft::LogThis;
+package EerieSoft::RecThis;
 
 use 5.012003;
 use strict;
@@ -29,7 +29,6 @@ our @ISA = qw(Exporter);
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
-	RecThis RecThisDump
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
@@ -65,7 +64,7 @@ sub new($$) {
 
 	$default_fh = (*STDERR) unless (defined $default_fh);
 	
-	my $self = $_ll;
+	my $self = \$_ll;
 	
 	bless($self, $class);
 }
