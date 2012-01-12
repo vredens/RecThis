@@ -72,7 +72,7 @@ sub RecThis($$$) {
 	my $_l = shift;
 	my $_m = shift;
 
-	print $default_fh, '[' . `date %Y-%m-%d %H:%M:%i` . '][' . $_l . ']' . '-' x $_l . ' ' . $_m . "\n" if ($_l >= 0 and $_l <= $$self);
+	print $default_fh '[' . `date "+%Y-%m-%d %H:%M:%i"` . '][' . $_l . ']' . '-' x $_l . ' ' . $_m . "\n" if ($_l >= 0 and $_l <= $$self);
 }
 
 sub RecThisDump($$$) {
@@ -80,7 +80,7 @@ sub RecThisDump($$$) {
 	my $_l = shift;
 	my $_o = shift;
 	
-	print $default_fh, '[' . `date %Y-%m-%d %H:%M:%i` . '][' . $_l . ']' . '-' x $_l . ' ' . Dumper($_o) . "\n" if ($_l >= 0 and $_l <= $$self);
+	print $default_fh '[' . `date "+%Y-%m-%d %H:%M:%i"` . '][' . $_l . ']' . '-' x $_l . ' ' . Dumper($_o) . "\n" if ($_l >= 0 and $_l <= $$self);
 }
 
 # Preloaded methods go here.
