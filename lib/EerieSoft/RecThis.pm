@@ -71,16 +71,26 @@ sub RecThis($$$) {
 	my $self = shift;
 	my $_l = shift;
 	my $_m = shift;
-
-	print $default_fh '[' . `date "+%Y-%m-%d %H:%M:%i"` . '][' . $_l . ']' . '-' x $_l . ' ' . $_m . "\n" if ($_l >= 0 and $_l <= $$self);
+	
+	if ($_l >= 0 and $_l <= $$self) {
+		my @date = localtime;
+		my $prefix = sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d][%.2d]", 1900 + $date[5], $date[4], $date[3], $date[2], $date[1], $date[0], $_l;
+		
+		print $default_fh $prefix . '-' x $_l . ' ' . $_m . "\n";
+	}
 }
 
 sub RecThisDump($$$) {
 	my $self = shift;
 	my $_l = shift;
 	my $_o = shift;
-	
-	print $default_fh '[' . `date "+%Y-%m-%d %H:%M:%i"` . '][' . $_l . ']' . '-' x $_l . ' ' . Dumper($_o) . "\n" if ($_l >= 0 and $_l <= $$self);
+
+	if ($_l >= 0 and $_l <= $$self) {
+		my @date = localtime;
+		my $prefix = sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d][%.2d]", 1900 + $date[5], $date[4], $date[3], $date[2], $date[1], $date[0], $_l;
+		
+		print $default_fh $prefix . '-' x $_l . ' ' . Dumper($_o) . "\n";
+	}
 }
 
 # Preloaded methods go here.
@@ -88,9 +98,10 @@ sub RecThisDump($$$) {
 1;
 
 __END__
+
 =head1 NAME
 
-EerieSoft::LogThis - EerieSoftronics logging interface
+EerieSoft::RecThis - EerieSoftronics logging interface
 
 =head1 SYNOPSIS
 
