@@ -48,10 +48,8 @@ sub set_defaults($$) {
 	
 	if (defined fileno($_f)) {
 		$default_fh = $_f;
-	} elsif(-w $_f) {
-		open($default_fh, '>>', $_f) or croak('Could not open file ' . $_f);
 	} else {
-		croak 'You did not provide a writable file or filehandle';
+		open($default_fh, '>>', $_f) or croak('Could not open file ' . $_f);
 	}
 	croak 'Invalid minimum log level ' . $_ll unless ($_ll >= 0 and $_ll <= 100);
 	$default_ll = $_ll;
