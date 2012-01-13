@@ -55,24 +55,13 @@ sub set_defaults($$) {
 	$default_ll = $_ll;
 }
 
-
-sub new($$) {
-	my $class = shift;
-	my $_ll = shift;
-
-	$default_fh = (*STDERR) unless (defined $default_fh);
-	
-	my $self = \$_ll;
-	
-	bless($self, $class);
-}
-
-sub RecThis($$$) {
-	my $self = shift;
+sub RecThis($$) {
 	my $_l = shift;
 	my $_m = shift;
 	
-	if ($_l >= 0 and $_l <= $$self) {
+	$default_fh = (*STDERR) unless (defined $default_fh);
+	
+	if ($_l >= 0 and $_l <= $default_ll) {
 		my @date = localtime;
 		my $prefix = sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d][%.2d]", 1900 + $date[5], $date[4], $date[3], $date[2], $date[1], $date[0], $_l;
 		
@@ -80,12 +69,13 @@ sub RecThis($$$) {
 	}
 }
 
-sub RecThisDump($$$) {
-	my $self = shift;
+sub RecThisDump($$) {
 	my $_l = shift;
 	my $_o = shift;
+	
+	$default_fh = (*STDERR) unless (defined $default_fh);
 
-	if ($_l >= 0 and $_l <= $$self) {
+	if ($_l >= 0 and $_l <= $default_ll) {
 		my @date = localtime;
 		my $prefix = sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d][%.2d]", 1900 + $date[5], $date[4], $date[3], $date[2], $date[1], $date[0], $_l;
 		
@@ -152,6 +142,5 @@ Joao Bernardo Ribeiro, E<lt>jbr@eeriesoftronics.comE<gt>
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2012 by EerieSoftronics
-
 
 =cut
