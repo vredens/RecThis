@@ -8,14 +8,19 @@
 use strict;
 use warnings;
 
+use File::Temp qw/ tempfile /;
+
 use Test::More tests => 3;
 
 BEGIN { use_ok('EerieSoft::RecThis') };
 
-my $o = new EerieSoft::RecThis(3);
+my ($fh, $filename) = tempfile();
 
-isa_ok($o, 'EerieSoft::RecThis');
-can_ok($o, qw/RecThis RecThisDump/);
+ok(EerieSoft::RecThis::set_defaults(50, $filename), 'Set defaults');
+ok(EerieSoft::RecThis::RecThis(10, 'ERROR'), 'Record');
+
+my $l = <$fh>;
+ok($l =~ /^\[\d{4}(-\d{2}){2} \d{2}(:\d{2}){2}\]\[\d+\]---------- ERROR$/, 'Record is correct');
 
 #########################
 
