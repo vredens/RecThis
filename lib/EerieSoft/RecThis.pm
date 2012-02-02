@@ -46,7 +46,7 @@ sub close {
 	close($default_fh);
 }
 
-sub set_defaults($$) {
+sub set_defaults($$$) {
 	my $_f = shift;
 	my $_ll = shift;
 	my $reset = shift;
