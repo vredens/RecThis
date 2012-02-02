@@ -49,11 +49,12 @@ sub close {
 sub set_defaults($$) {
 	my $_f = shift;
 	my $_ll = shift;
+	my $reset = shift;
 	
 	if (defined fileno($_f)) {
 		$default_fh = $_f;
 	} else {
-		open($default_fh, '>>', $_f) or croak('Could not open file ' . $_f);
+		open($default_fh, defined $reset ? '>' : '>>', $_f) or croak('Could not open file ' . $_f);
 	}
 	croak 'Invalid minimum log level ' . $_ll unless ($_ll >= 0 and $_ll <= 100);
 	$default_ll = $_ll;
