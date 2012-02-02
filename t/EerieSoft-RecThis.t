@@ -9,18 +9,28 @@ use strict;
 use warnings;
 
 use File::Temp qw/ tempfile /;
+use Fcntl qw/:seek/;
 
-use Test::More tests => 3;
+use Test::More;
 
 BEGIN { use_ok('EerieSoft::RecThis') };
 
 my ($fh, $filename) = tempfile();
 
-ok(EerieSoft::RecThis::set_defaults(50, $filename), 'Set defaults');
-ok(EerieSoft::RecThis::RecThis(10, 'ERROR'), 'Record');
+{
+	ok(EerieSoft::RecThis::set_defaults($filename, 50), 'Set defaults');
+	ok(EerieSoft::RecThis::RecThis(10, 'ERROR'), 'Record');
+	ok(EerieSoft::RecThis::close(), 'close');
+}
 
-my $l = <$fh>;
+#seek $fh, 0, SEEK_SET;
+my $l;
+ok($l = <$fh>, 'read a line');
 ok($l =~ /^\[\d{4}(-\d{2}){2} \d{2}(:\d{2}){2}\]\[\d+\]---------- ERROR$/, 'Record is correct');
+
+unlink $filename;
+
+done_testing();
 
 #########################
 

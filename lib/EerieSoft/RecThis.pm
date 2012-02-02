@@ -42,6 +42,10 @@ our $VERSION = '1.00';
 our $default_fh;
 our $default_ll = ERROR;
 
+sub close {
+	close($default_fh);
+}
+
 sub set_defaults($$) {
 	my $_f = shift;
 	my $_ll = shift;
