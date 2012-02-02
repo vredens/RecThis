@@ -46,10 +46,12 @@ sub close {
 	close($default_fh);
 }
 
-sub set_defaults($$$) {
+sub set_defaults {
 	my $_f = shift;
 	my $_ll = shift;
 	my $reset = shift;
+
+	croak 'Invalid number of arguments' unless defined $_f and defined $_ll;
 	
 	if (defined fileno($_f)) {
 		$default_fh = $_f;
