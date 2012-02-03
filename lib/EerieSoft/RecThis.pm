@@ -40,7 +40,7 @@ our @EXPORT = qw(
 our $VERSION = '1.00';
 
 our $default_fh;
-our $default_ll = ERROR;
+our $default_ll = DEBUG;
 
 sub close {
 	close($default_fh);
