@@ -6,6 +6,8 @@ use warnings;
 
 use Carp;
 use Data::Dumper;
+use Term::ANSIColor;
+eval "use Win32::Console::ANSI";
 
 require Exporter;
 
@@ -70,7 +72,7 @@ sub RecThis($$) {
 	
 	if ($_l >= 0 and $_l <= $default_ll) {
 		my @date = localtime;
-		my $prefix = sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d][%.2d]", 1900 + $date[5], $date[4], $date[3], $date[2], $date[1], $date[0], $_l;
+		my $prefix = sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d][%.2d>%.2d]", 1900 + $date[5], $date[4], $date[3], $date[2], $date[1], $date[0], $_l, $default_ll;
 		
 		print $default_fh $prefix . '-' x $_l . ' ' . $_m . "\n";
 	}
