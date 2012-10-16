@@ -18,15 +18,11 @@ BEGIN { use_ok('EerieSoft::RecThis') };
 my ($fh, $filename) = tempfile();
 
 {
-	ok(EerieSoft::RecThis::set_defaults($filename, 50), 'Set defaults');
-	ok(EerieSoft::RecThis::RecThis(10, 'ERROR'), 'Record');
+	ok(EerieSoft::RecThis::init({'file' => $filename, 'max-level' => 50}), 'Set defaults');
+	ok(EerieSoft::RecThis::rec_this(10, 'ERROR'), 'Record');
+	ok(EerieSoft::RecThis::rec_this_dump(20, {'lol' => 'ERROR'}), 'Record Dump');
 	ok(EerieSoft::RecThis::close(), 'close');
 }
-
-#seek $fh, 0, SEEK_SET;
-my $l;
-ok($l = <$fh>, 'read a line');
-ok($l =~ /^\[\d{4}(-\d{2}){2} \d{2}(:\d{2}){2}\]\[\d+\]---------- ERROR$/, 'Record is correct');
 
 unlink $filename;
 
