@@ -6,6 +6,7 @@ use warnings;
 
 use Carp;
 use Data::Dumper;
+use Time::HiRes qw(gettimeofday tv_interval);
 
 require Exporter;
 
@@ -22,7 +23,7 @@ use constant {
 
 our @ISA = qw(Exporter);
 
-our @EXPORT_OK = ( qw(rec_this rec_this_dump) );
+our @EXPORT_OK = ( qw(rec_this rec_this_dump rec_pstart rec_pend) );
 
 our @EXPORT = qw();
 
@@ -34,6 +35,11 @@ my $max = DEBUG;
 my $indent = 0;
 my $timestamps = 1;
 my $caller = 1;
+
+# profiler global vars
+my $pfh;
+my $max_id = 0;
+my $profiler = {};
 
 sub close {
 	close($fh);
@@ -47,6 +53,14 @@ sub init {
 			$fh = $opts->{'file'};
 		} else {
 			open($fh, defined $opts->{'reset'} ? '>' : '>>', $opts->{'file'}) or croak('Could not open file ' . $opts->{'file'});
+		}
+	}
+	
+	if (defined $opts->{'profiler-file'}) {
+		if (defined fileno($opts->{'profiler-file'})) {
+			$pfh = $opts->{'profiler-file'};
+		} else {
+			open($pfh, defined $opts->{'reset'} ? '>' : '>>', $opts->{'profiler-file'}) or croak('Could not open file ' . $opts->{'profiler-file'});
 		}
 	}
 	
@@ -104,6 +118,27 @@ sub rec_this_dump($$) {
 	rec_this(shift, Dumper(shift));
 }
 
+sub rec_pstart {
+	my $id = $max_id++;
+	
+	# we reset back to 0 if we reach 50.000 profile runs
+	$max_id = 0 if $max_id > 50000;
+
+	$profiler->{$id} = [gettimeofday];
+	
+	print $id, "\n";
+	
+	return $id;
+}
+
+sub rec_pend {
+	my ($id, $message) = @_;
+	
+	if (defined $profiler->{$id}) {
+		printf $pfh "%.6f;%s\n", tv_interval($profiler->{$id}) * 1000, $message;
+	}
+}
+
 1;
 
 __END__
@@ -133,6 +168,13 @@ EerieSoft::RecThis - EerieSoftronics logging interface
 
   # dump avariable
   rec_this_dump(25, $my_var);
+
+  # setup a profiler
+  EerieSoft::RecThis::init({'profiler-file' => 'profile.log'});
+  my $pname = rec_pstart();
+  # YOUR CODE TO PROFILE
+  rec_pstop($pname, 'MyProfileName');
+
 
 =head1 DESCRIPTION
 
@@ -172,6 +214,10 @@ are.
 rec_this
 
 rec_this_dump
+
+rec_pstart
+
+rec_pend
 
 =head1 FUNCTIONS
 
