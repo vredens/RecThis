@@ -126,15 +126,13 @@ sub rec_pstart {
 
 	$profiler->{$id} = [gettimeofday];
 	
-	print $id, "\n";
-	
 	return $id;
 }
 
 sub rec_pend {
 	my ($id, $message) = @_;
 	
-	if (defined $profiler->{$id}) {
+	if (defined $pfh and defined $profiler->{$id}) {
 		printf $pfh "%.6f;%s\n", tv_interval($profiler->{$id}) * 1000, $message;
 	}
 }
