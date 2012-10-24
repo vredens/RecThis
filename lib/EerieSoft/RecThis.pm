@@ -115,7 +115,30 @@ sub rec_this($$) {
 }
 
 sub rec_this_dump($$) {
-	rec_this(shift, Dumper(shift));
+	my $_l = shift;
+	my $_m = Dumper(shift);
+	
+	if ($_l >= $min and $_l <= $max) {
+		my $prefix = '';
+		
+		if ($timestamps) {
+			my @_date = localtime;
+			$prefix .= sprintf "[%.4d-%.2d-%.2d %.2d:%.2d:%.2d]", 1900 + $_date[5], $_date[4], $_date[3], $_date[2], $_date[1], $_date[0];
+		}
+		if ($caller) {
+			my @_caller = caller;
+			$prefix .= sprintf "[%s:%s]", $_caller[0], $_caller[2];
+		}
+		if ($indent) {
+			$prefix .= '-' x $_l . ' ';
+		} else {
+			$prefix .= '[' . $_l . '] ';
+		}
+
+		print $fh $prefix . $_m . "\n";
+	}
+	
+	1;
 }
 
 sub rec_pstart {
