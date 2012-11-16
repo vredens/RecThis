@@ -108,7 +108,7 @@ sub rec_this($$) {
 			$prefix .= '[' . $_l . '] ';
 		}
 
-		print $fh $prefix . $_m . "\n";
+		print $fh $prefix, $_m, "\n";
 	}
 	
 	1;
@@ -117,9 +117,11 @@ sub rec_this($$) {
 sub rec_this_dump($$) {
 	my $_l = shift;
 	my $_m = Dumper(shift);
+	my $_tm = shift;
 	
 	if ($_l >= $min and $_l <= $max) {
 		my $prefix = '';
+		$_tm = defined ($_tm) ? $_tm : '';
 		
 		if ($timestamps) {
 			my @_date = localtime;
@@ -135,15 +137,16 @@ sub rec_this_dump($$) {
 			$prefix .= '[' . $_l . '] ';
 		}
 
-		print $fh $prefix . $_m . "\n";
+		print $fh $prefix, $_tm, "\n";
+		print $fh $_m;
 	}
 	
 	1;
 }
 
 sub rec_pstart {
-	my $id = $max_id++;
-	
+	my $id = shift || $max_id++;
+
 	# we reset back to 0 if we reach 50.000 profile runs
 	$max_id = 0 if $max_id > 50000;
 
@@ -158,6 +161,7 @@ sub rec_pend {
 	if (defined $pfh and defined $profiler->{$id}) {
 		printf $pfh "%.6f;%s\n", tv_interval($profiler->{$id}) * 1000, $message;
 	}
+	return $id;
 }
 
 1;
@@ -179,8 +183,6 @@ EerieSoft::RecThis - EerieSoftronics logging interface
   open(my $fh, '-| my_record_keeper_tool');
   EerieSoft::RecThis::init({'file' => $fh, 'max-level' => EerieSoft::RecThis::DEBUG});
   
-  # the init function is completly OPTIONAL, default is to record to STDERR
-
   # log a message
   rec_this(3, 'Fatal error');
   
@@ -192,9 +194,16 @@ EerieSoft::RecThis - EerieSoftronics logging interface
 
   # setup a profiler
   EerieSoft::RecThis::init({'profiler-file' => 'profile.log'});
-  my $pname = rec_pstart();
-  # YOUR CODE TO PROFILE
-  rec_pstop($pname, 'MyProfileName');
+
+  # use the auto id generator
+  my $profile_id = rec_pstart();
+  rec_pstop($profile_id, 'MyProfile descriptive text of what was done');
+  
+  # you can also force a profile id (for when profiling across methods)
+  rec_pstart('myprofile');
+  rec_pstop('myprofile', 'First call');
+  rec_pstart(rec_pstop('myprofile', 'Second call'));
+  rec_pstop('myprofile', 'Third call');
 
 
 =head1 DESCRIPTION
@@ -242,7 +251,7 @@ rec_pend
 
 =head1 FUNCTIONS
 
-=head2 setup (%options)
+=head2 init (%options)
 
 Sets all the options. Removes previous set options, including changing where to send messages.
 
@@ -258,13 +267,30 @@ Options are:
   
 That's it, that's all you can setup.
 
+=head2 rec_this (level, text)
+
+=head2 rec_this_dump (level, variable)
+
+=head2 rec_pstart
+
+You can pass it an optional argument which will be used as identifier of the profile.
+
+Returns the profile_id, auto generated if no profile id was passed. Auto generated ids are integers.
+
+=head2 rec_pend (profile_id, message)
+
+Saves profile data. Does not reset the initial timer, which means that subsequent calls to rec_pend without calling a rec_pstart will
+print profile data comparing always to the last rec_pstart called for that id.
+
+Returns the profile_id.
+
 =head1 SEE ALSO
 
 Nothing to see here, move along.
 
 =head1 AUTHOR
 
-JB "vredens" Ribeiro, E<lt>jbr at eerieguide dot comE<gt>
+J.B. Ribeiro, E<lt>jbr at eerieguide dot comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
