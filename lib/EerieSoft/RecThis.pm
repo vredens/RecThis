@@ -17,8 +17,9 @@ use constant {
 	NOTICE   => 15,
 	INFO     => 20,
 	DEBUG    => 25,
-	TODO     => 30,
-	OPTIMIZE => 35
+	RAW      => 30,
+	TODO     => 35,
+	OPTIMIZE => 40
 };
 
 our @ISA = qw(Exporter);
@@ -82,12 +83,11 @@ sub init {
 	1;
 }
 
-sub rec_this($$) {
+sub rec_this($@) {
 	my $_l = shift;
-	my $_m = shift;
 	
 	# deal with empty messages
-	$_m = defined ($_m) ? $_m : '';
+	my @_m = @_ ? @_ : ('');
 
 	#$fh = (*STDERR) unless (defined $fh);
 
@@ -108,7 +108,7 @@ sub rec_this($$) {
 			$prefix .= '[' . $_l . '] ';
 		}
 
-		print $fh $prefix, $_m, "\n";
+		print $fh $prefix, @_m, "\n";
 	}
 	
 	1;
